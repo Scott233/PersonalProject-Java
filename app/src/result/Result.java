@@ -11,5 +11,5 @@ public interface Result {
 
     int getNonBlankLineCount();
 
-    Iterator<Entry> listMostFrequent();
+    Iterable<Entry> listMostFrequent();
 }

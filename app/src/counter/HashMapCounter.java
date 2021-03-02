@@ -1,18 +1,17 @@
 package counter;
 
+import entry.Entry;
 import repository.Repository;
 import result.Result;
 import result.SimpleResult;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-public class HashMapCounter extends Counter {
+public class HashMapCounter extends Counter implements Comparator<String> {
 
     private int mCharCount = 0;
     private int mLineCount = 0;
-    private Map<String, Integer> mWordMap = new HashMap<>();
+    private final Map<String, Integer> mWordMap = new HashMap<>();
 
     public HashMapCounter(Repository repository) {
         super(repository);
@@ -36,12 +35,34 @@ public class HashMapCounter extends Counter {
 
     @Override
     protected Result buildResult() {
-        Set<String> wordSet = mWordMap.keySet();
         return new SimpleResult(
                 mCharCount,
                 mWordMap.size(),
                 mLineCount,
-                null
+                () -> new Iterator<>() {
+                    private int mCount = 0;
+                    private final Iterator<String> mSource = mWordMap.keySet().stream().sorted(HashMapCounter.this).iterator();
+
+                    @Override
+                    public boolean hasNext() {
+                        return mCount < 10;
+                    }
+
+                    @Override
+                    public Entry next() {
+                        ++mCount;
+                        String key = mSource.next();
+                        return new Entry(key, mWordMap.get(key));
+                    }
+                }
         );
     }
+
+    @Override
+    public int compare(String key1, String key2) {
+        int result = mWordMap.get(key1) - mWordMap.get(key2);
+        if (result == 0) result = key1.compareTo(key2);
+        return result;
+    }
+
 }

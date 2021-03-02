@@ -7,19 +7,30 @@ import java.util.Iterator;
 public class EmptyResult implements Result {
 
     private static EmptyResult sInstance = null;
-    private static Iterator<Entry> sEmptyIterator = new Iterator<>() {
-        @Override
-        public boolean hasNext() {
-            return false;
-        }
+    private static Iterable<Entry> sList = null;
 
-        @Override
-        public Entry next() {
-            return null;
-        }
-    };
+    private final Iterable<Entry> mList;
 
     private EmptyResult() {
+        if (sList == null) sList = new Iterable<>() {
+            private final Iterator<Entry> sIt = new Iterator<>() {
+                @Override
+                public boolean hasNext() {
+                    return false;
+                }
+
+                @Override
+                public Entry next() {
+                    return null;
+                }
+            };
+
+            @Override
+            public Iterator<Entry> iterator() {
+                return sIt;
+            }
+        };
+        mList = sList;
     }
 
     @Override
@@ -38,8 +49,8 @@ public class EmptyResult implements Result {
     }
 
     @Override
-    public Iterator<Entry> listMostFrequent() {
-        return sEmptyIterator;
+    public Iterable<Entry> listMostFrequent() {
+        return mList;
     }
 
     public static EmptyResult getInstance() {

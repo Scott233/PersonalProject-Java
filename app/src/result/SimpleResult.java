@@ -9,9 +9,9 @@ public class SimpleResult implements Result {
     private final int mCharCount;
     private final int mWordCount;
     private final int mLineCount;
-    private final Iterator<Entry> mEntryIterator;
+    private final Iterable<Entry> mEntryIterator;
 
-    public SimpleResult(int charCount, int wordCount, int lineCount, Iterator<Entry> entryIterator) {
+    public SimpleResult(int charCount, int wordCount, int lineCount, Iterable<Entry> entryIterator) {
         mCharCount = charCount;
         mWordCount = wordCount;
         mLineCount = lineCount;
@@ -34,7 +34,7 @@ public class SimpleResult implements Result {
     }
 
     @Override
-    public Iterator<Entry> listMostFrequent() {
+    public Iterable<Entry> listMostFrequent() {
         return mEntryIterator;
     }
 
