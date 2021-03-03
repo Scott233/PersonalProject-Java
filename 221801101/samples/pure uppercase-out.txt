@@ -1,0 +1,5 @@
+characters: 34
+words: 2
+lines: 4
+abcdefg: 1
+hijklmn: 1
