@@ -153,7 +153,7 @@
 > 读取文件字符流 -> 统计字符数、有效行数等数据并保存 -> 输出被保存的结果
 
 <h3 id="codeStyle">代码规范</h3>
-<a href="codeStyle.md">codeStyle.md</a>
+<a href="https://github.com/Scott233/PersonalProject-Java/blob/main/221801101/codeStyle.md"> https://github.com/Scott233/PersonalProject-Java/blob/main/221801101/codeStyle.md </a>
 
 <h3 id="design">接口设计和实现</h3>
 
@@ -222,7 +222,7 @@ private static void ensureArguments(String[]args){
 }
 
 /*Reader、Writer等字符流使用了Java7引进的try-with-resources语句块*/
-try(final Reader reader=...){
+try(final Reader reader=...; final Writer writer=...){
 ......
 }catch(IOException e){
     /*IO异常均打印StackTrace*/

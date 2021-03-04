@@ -2,14 +2,14 @@ import lib.Counter;
 import lib.Printer;
 import lib.Result;
 
-public class WordCount {
+public final class WordCount {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         ensureArguments(args);
         begin(args[0], args[1]);
     }
 
-    private static void ensureArguments(String[] args) {
+    private static void ensureArguments(final String[] args) {
         switch (args.length) {
             case 0:
                 throw new IllegalArgumentException("No input file.");
@@ -20,7 +20,7 @@ public class WordCount {
         }
     }
 
-    private static void begin(String inputFilePath, String outputFilePath) {
+    private static void begin(final String inputFilePath, final String outputFilePath) {
         Counter counter = new Counter();
         Result result = counter.count(inputFilePath);
         Printer printer = new Printer();

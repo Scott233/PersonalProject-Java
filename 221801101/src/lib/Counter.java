@@ -1,17 +1,20 @@
 package lib;
 
-import java.io.*;
-import java.util.*;
-import java.util.stream.Stream;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class Counter {
 
-    public final Result count(String filePath) {
+    public final Result count(final String filePath) {
         int charCount = 0;
         int lineCount = 0;
-        HashMap<String, Integer> wordMap = new HashMap<>();
+        final Map<String, Integer> wordMap = new HashMap<>();
 
-        StringBuilder builder = new StringBuilder(32);
+        final StringBuilder builder = new StringBuilder(32);
         try (Reader reader = new BufferedReader(new FileReader(filePath))) {
             boolean incLine = false;
             for (; ; ) {
@@ -48,12 +51,8 @@ public final class Counter {
                 charCount,
                 wordMap.size(),
                 lineCount,
-                buildIterable(wordMap)
+                wordMap.entrySet().stream().sorted(Counter::compare)::iterator
         );
-    }
-
-    private static Iterable<Map.Entry<String, Integer>> buildIterable(HashMap<String, Integer> map) {
-        return map.entrySet().stream().sorted(Counter::compare)::iterator;
     }
 
     private static int compare(Map.Entry<String, Integer> e1, Map.Entry<String, Integer> e2) {
