@@ -1,0 +1,11 @@
+characters: 369
+words: 8
+lines: 19
+name: 8
+student: 8
+students: 2
+encoding: 1
+john: 1
+lisa: 1
+mary: 1
+version: 1

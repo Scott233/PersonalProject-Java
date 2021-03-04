@@ -1,18 +1,20 @@
-[
-  {
-    "name": "Tom",
-    "age": "18"
-  },
-  {
-    "name": "Mary",
-    "age": "18"
-  },
-  {
-    "name": "Lisa",
-    "age": "18"
-  },
-  {
-    "name": "John",
-    "age": "18"
-  }
-]
+{
+  "students": [
+    {
+      "name": "Tom",
+      "age": "18"
+    },
+    {
+      "name": "Mary",
+      "age": "18"
+    },
+    {
+      "name": "Lisa",
+      "age": "18"
+    },
+    {
+      "name": "John",
+      "age": "18"
+    }
+  ]
+}

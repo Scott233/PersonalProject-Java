@@ -1,9 +1,8 @@
 package lib;
 
-import java.util.Iterator;
 import java.util.Map;
 
-public class Result {
+public final class Result {
 
     public final int charCount;
     public final int wordCount;

@@ -1,20 +1,12 @@
 package lib;
 
 import java.io.*;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Stream;
 
 public final class Counter {
 
-    private static final Comparator<Map.Entry<String, Integer>> sComparator = (e1, e2) -> {
-        int retValue = e1.getValue() - e2.getValue();
-        if (retValue == 0) retValue = e2.getKey().compareTo(e1.getKey());
-        return retValue;
-    };
-
-    public Result count(String filePath) {
+    public final Result count(String filePath) {
         int charCount = 0;
         int lineCount = 0;
         HashMap<String, Integer> wordMap = new HashMap<>();
@@ -56,26 +48,18 @@ public final class Counter {
                 charCount,
                 wordMap.size(),
                 lineCount,
-                () -> new Iterator<>() {
-                    private final Iterator<Map.Entry<String, Integer>> mSource = wordMap.entrySet()
-                            .stream()
-                            .sorted((e1, e2) -> {
-                                int retVal = e2.getValue() - e1.getValue();
-                                if (retVal == 0) retVal = e1.getKey().compareTo(e2.getKey());
-                                return retVal;
-                            }).iterator();
-
-                    @Override
-                    public boolean hasNext() {
-                        return mSource.hasNext();
-                    }
-
-                    @Override
-                    public Map.Entry<String, Integer> next() {
-                        return mSource.next();
-                    }
-                }
+                buildIterable(wordMap)
         );
+    }
+
+    private static Iterable<Map.Entry<String, Integer>> buildIterable(HashMap<String, Integer> map) {
+        return map.entrySet().stream().sorted(Counter::compare)::iterator;
+    }
+
+    private static int compare(Map.Entry<String, Integer> e1, Map.Entry<String, Integer> e2) {
+        int retVal = e2.getValue() - e1.getValue();
+        if (retVal == 0) retVal = e1.getKey().compareTo(e2.getKey());
+        return retVal;
     }
 
 }

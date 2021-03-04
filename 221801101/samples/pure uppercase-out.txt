@@ -1,4 +1,4 @@
-characters: 34
+characters: 31
 words: 2
 lines: 4
 abcdefg: 1

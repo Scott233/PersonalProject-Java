@@ -9,17 +9,17 @@ import java.util.Map;
 
 public final class Printer {
 
-    public void print(Result result, String filePath) {
+    public final void print(Result result, String filePath) {
         try (Writer writer = new BufferedWriter(new FileWriter(filePath))) {
             writer.write("characters: ");
             writer.write(String.valueOf(result.charCount));
-            writer.write("\r\n");
+            writer.write('\n');
             writer.write("words: ");
             writer.write(String.valueOf(result.wordCount));
-            writer.write("\r\n");
+            writer.write('\n');
             writer.write("lines: ");
             writer.write(String.valueOf(result.lineCount));
-            writer.write("\r\n");
+            writer.write('\n');
             Iterable<Map.Entry<String, Integer>> wrapper = () -> new Iterator<>() {
                 private final Iterator<Map.Entry<String, Integer>> mSource = result.mostFrequent.iterator();
                 private int mCount = 0;
@@ -39,7 +39,7 @@ public final class Printer {
                 writer.write(it.getKey());
                 writer.write(": ");
                 writer.write(String.valueOf(it.getValue()));
-                writer.write("\r\n");
+                writer.write('\n');
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -72,4 +72,9 @@ class CounterTest {
         assert testImpl("json");
     }
 
+    @Test
+    public void testXmlFile() {
+        assert testImpl("xml");
+    }
+
 }

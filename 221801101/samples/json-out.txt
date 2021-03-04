@@ -1,7 +1,8 @@
-characters: 198
-words: 4
-lines: 18
+characters: 233
+words: 5
+lines: 20
 name: 4
 john: 1
 lisa: 1
 mary: 1
+students: 1
