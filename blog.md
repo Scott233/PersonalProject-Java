@@ -41,6 +41,7 @@
             <li><a href="#codeStyle">代码规范</a></li>
             <li><a href="#design">接口设计和实现</a></li>
             <li><a href="#improvement">性能改进</a></li>
+            <li><a href="#unitTest">单元测试</a></li>
             <li><a href="#exception">异常处理说明</a></li>
             <li><a href="#achievement">心路历程与收获</a></li>
         </ol>
@@ -196,11 +197,6 @@ public final class Counter {
 
 /*Util类，关键静态方法boolean isWord(Charsequence)用于判断字符序列是否满足作为单词的条件*/
 public final class Util {
-    //不支持生成实例
-    private Util() {
-        throw new UnsupportedOperationException(/*...*/);
-    }
-
     public static boolean isWord(Charsequence seq) {
         ......
     }
@@ -214,119 +210,28 @@ public final class Printer {
 }
 ```
 
-<h4>计数实现(Counter类中)</h4>
+<h4>计数方法实现</h4>
+<ul>
+    <li>用BufferedReader包装FileReader读取文件字符流。</li>
+    <li>用两个int统计字符数和有效行数，用一个StringBuilder保存可能是单词的字符序列，用HashMap保存单词频率。</li>
+    <li>一个字符一个字符地读取，遇到字母或数字则append到StringBuilder中，遇到分隔符就用Util判断是否为单词，是的话HashMap中的相应记录就+1,不是就清空StringBuilder。</li>
+    <li>用一个bool变量保存当前行是否有非空字符，读取到换行符时根据该布尔值行数+1。</li>
+    <li>读取完毕后，根据HashMap生成按出现频率和字母序排序过的可迭代对象，将其连同字符数、行数一同保存到Result中并返回，等待Printer类输出。</li>
+</ul>
 
-```java
-/*用BufferedReader读取文件*/
-try(final Reader reader = new BufferedReader(new FileReader(filePath))){
-    int ch = reader.read();
-    while(ch!=-1){
-        ......
-        ch = reader.read();
-    }
-}catch(IOException e){
-    ......
-}
-
-/*用两个int分别统计字符数和有效行数*/
-int charCount = 0;
-int lineCount = 0;
-
-/*用bool值表示行里是否有内容*/
-boolean incLine = false;
-
-/*用HashMap保存单词出现频率*/
-Map<String,Integer> wordMap = new HashMap<>();
-
-/*用StringBuilder存可能是单词的字符序列*/
-StringBuilder builder = new StringBuilder();
-......
-
-/*每读取一个字符时
-if(Character.isDigitOrLetter(ch)){
-    builder.appendCodePoint(ch);
-    incLine = true;
- */
-}else{
-    if(Util.isWord(builder)){
-        /*保存该单词*/
-        String word = builder.toString();
-        int count = wordMap.getOrDefault(word,0);
-        wordMap.put(word,count);
-    }
-    /*清空字符序列*/
-    builder.setLength(0);
-    /*读取到换行符且原先行内有有效内容*/
-    if(ch == '\n'&&incLine){
-        ++lineCount;
-        incLine = false;
-    }
-    /*读取到除空白字符、字母数字以外的其它字符也算行内有有效内容*/
-    if(!Character.isWhiteSpace(ch)&&ch>0)
-        incLine = true;
-    /*文件读完*/
-    if(ch<0){
-        /*如果最后一行有有效内容*/
-        if(incLine)
-            ++lineCount;
-        /*跳出循环，结束读取*/
-        break;
-    }
-    /*字符数+1*/
-    ++wordCount;
-}
-```
-
-<h4>排序实现(Counter类中)</h4>
-```java
-/*比较两个单词出现频率的静态方法*/
-private static int compare(Map.Entry<String, Integer> e1, Map.Entry<String, Integer> e2) {
-    /*比较出现频率*/
-    int retVal = e2.getValue() - e1.getValue();
-    /*出现次数相等，就比较字符序*/
-    if (retVal == 0) retVal = e1.getKey().compareTo(e2.getKey());
-    return retVal;
-}
-
-/*输出经过排序的可迭代对象(此处用了点语法糖)*/
-Iterable<Map.Entry<String,Integer>> mostFrequent = wordMap.entrySet()
-    .stream()
-    .sorted(Counter::compare)::iterator;
-```
-
-<h4>限制输出频率最高的10个单词实现（Printer类中）</h4>
-```java
-/*包装Counter传来的Iterable,限制最大数10（匿名内部类使用了Lambda表达式）*/
-Iterable<Map.Entry<String,Integer>> wrapper = () -> new Iterator<>() {
-    /*原来的Iterator*/
-    private final Iterator<Map.Entry<String, Integer>> mSource = result.mostFrequent.iterator();
-    /*计数*/
-    private int mCount = 0;
-
-    @Override
-    public boolean hasNext() {
-        /*增加最大为10的数量限制*/
-        return mSource.hasNext() && mCount < 10;
-    }
-
-    @Override
-    public Map.Entry<String, Integer> next() {
-        /*返回下一个Entry，mCount自增*/
-        ++mCount;
-        return mSource.next();
-    }
-};
-
-/*用foreach循环输出频度最高的10个词，具体过程省略*/
-for(Entry<String,Integer> it:wrapper){
-    ......
-}
-```
 
 <h3 id="improvement">性能改进</h3>
 
 * 文件读写是耗时操作，如果一次只读写一个字符，会产生大量系统调用，效率低下，故全部采用BufferedReader和BufferedWriter包装
 * 对出现频率最高的词汇的排序采用Stream类的sort算法而非ArrayList的sort算法，在数据量超过10000的情况下，效率有明显提升
+
+<h3 id="unitTest">单元测试</h3>
+<ul>
+    <li>单元测试类的目录在src/test下，使用了JUnit5，主要测试了Counter的count方法、Util的isWord方法和比较了ArrayList类和Stream类的排序算法的性能。</li>
+    <li>UtilTest用预定义的字符串测试isWord方法返回值的正确性。</li>
+    <li>CounterTest用samples目录下的系列input文件来让counter方法把结果输入到output文件中，将其与samples目录下的标准output文件进行比较，文件内容完全一致则测试通过。</li>
+</ul>
+
 
 <h3 id="exception">部分异常处理说明</h3>
 
@@ -335,19 +240,16 @@ for(Entry<String,Integer> it:wrapper){
 ensureArguments(args);
 
 /*ensureArguments方法的实现*/
-private static void ensureArguments(String[]args){
-    switch(args.length){
-        case 0:
-            /*无输入文件，抛出异常*/
-            throw new IllegalArgumentException("No input file.");
-        case 1:
-            /*无输出文件，抛出异常*/
-            throw new IllegalArgumentException("No output file");
-        default:
-            /*有输入文件也有输出文件。通过*/
-            break;
-        }
-    }
+switch(args.length){
+    case 0:
+        /*无输入文件，抛出异常*/
+        throw new IllegalArgumentException("No input file.");
+    case 1:
+        /*无输出文件，抛出异常*/
+        throw new IllegalArgumentException("No output file");
+    default:
+        /*有输入文件也有输出文件。通过*/
+        break;
 }
 
 /*Reader、Writer等字符流使用了Java7引进的try-with-resources语句块*/
